@@ -27,8 +27,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $logs = array(
-    array('module'=>'groupexchange', 'action'=>'view offers', 'mtable'=>'groupexchange', 'field'=>'name'),
-    array('module'=>'groupexchange', 'action'=>'find offer', 'mtable'=>'groupexchange', 'field'=>'name'),
-	array('module'=>'groupexchange', 'action'=>'save offer', 'mtable'=>'groupexchange', 'field'=>'name'),
+	array('module'=>'groupexchange', 'action'=>'view offers', 'mtable'=>'groupexchange', 'field'=>'name'),
+    array('module'=>'groupexchange', 'action'=>'create offer', 'mtable'=>'groupexchange', 'field'=>'name'),
+    array('module'=>'groupexchange', 'action'=>'delete offer', 'mtable'=>'groupexchange', 'field'=>'name'),
     array('module'=>'groupexchange', 'action'=>'accept offer', 'mtable'=>'groupexchange', 'field'=>'name'),
 );

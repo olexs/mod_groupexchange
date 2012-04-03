@@ -30,18 +30,7 @@
 
 $capabilities = array(
 
-    'mod/groupexchange:offer' => array(
-
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
-            'student' => CAP_ALLOW,
-            'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW
-        )
-    ),
-
-    'mod/groupexchange:accept' => array(
+    'mod/groupexchange:participate' => array(
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
