@@ -270,16 +270,20 @@ function groupexchange_create_offer($exchange, $offer_group, $request_groups) {
 		$obj->groupid = $groupid;
 		$DB->insert_record('groupexchange_offers_groups', $obj);
 	}	
+	
+	// TODO: log
 }
 
-function groupexchange_delete_offer($offerid) {
+function groupexchange_delete_offer($offerid, $force = false) {
 	global $DB, $USER;
 	
-	if (!$DB->record_exists('groupexchange_offers', array('id' => $offerid, 'userid' => $USER->id)))
+	if (!$force && !$DB->record_exists('groupexchange_offers', array('id' => $offerid, 'userid' => $USER->id)))
 		return false;
 	
 	if (!$DB->delete_records('groupexchange_offers_groups', array('offerid' => $offerid)))
 		return false;
+		
+	// TODO: log
 	
 	return $DB->delete_records('groupexchange_offers', array('id' => $offerid));
 }
@@ -291,6 +295,34 @@ function groupexchange_delete_offer($offerid) {
  * Deactivates the offer
  * Sends out email confirmations to both users
  */
-function groupexchange_accept_offer($offer) {
+function groupexchange_accept_offer($offer, $oldgroupid, $course) {
+	
+	global $DB, $USER;
+	
+	// prepare data
+	$offerer = $offer->userid;
+	$offerer_oldgroup = $offer->group_offered;
+	$offerer_newgroup = $oldgroupid;
+	
+	$accepter = $USER->id;
+	$accepter_oldgroup = $oldgroupid;
+	$accepter_newgroup = $offer->group_offered;
+	
+	// update standing offer
+	$offer->accepted_by = $USER->id;
+	$offer->accepted_groupid = $oldgroupid;
+	$DB->update_record('groupexchange_offers', $offer);
+	
+	// remove users from old groups
+	groups_remove_member($offerer_oldgroup, $offerer);
+	groups_remove_member($accepter_oldgroup, $accepter);
+	
+	// assign users to new groups
+	groups_add_member($offerer_newgroup, $offerer);
+	groups_add_member($accepter_newgroup, $accepter);
+	
+	// TODO: log
+	
+	// TODO: notify the offerer about the exchange
 	
 }

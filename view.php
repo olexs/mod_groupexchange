@@ -94,7 +94,50 @@
 			// reload the exchange object
 			$exchange = groupexchange_get_instance($cm->instance);
 		} else {
-			echo $OUTPUT->notification(get_string('error_delete_offer', 'groupexchange'), 'notifyerror');
+			echo $OUTPUT->notification(get_string('error_delete_offer', 'groupexchange'), 'notifyproblem');
+		}
+		
+		$action = 'view';
+	}
+	
+	/*
+	 * Accepting an offer
+	 */
+	if ($action == 'accept') {  
+		$accept_offer = optional_param('offer', 0, PARAM_INT);
+		$offer = null;
+		
+		// validate input
+		if (!$DB->record_exists('groupexchange_offers', array('id' => $accept_offer, 'groupexchange' => $exchange->id)))
+			$errors[] = get_string('offer_doesnt_exist', 'groupexchange');
+		else {
+			$offer = groupexchange_get_offer($accept_offer);
+			if ($offer->userid == $USER->id || in_array($offer->group_offered, $groupmemberships))
+				$errors[] = get_string('not_acceptable', 'groupexchange');
+				
+			if ($offer->accepted_by != 0)
+				$errors[] = get_string('offer_already_taken', 'groupexchange');
+			
+			$oldgroupid = 0;
+			foreach ($offer->groups as $groupid => $group) {
+				if (in_array($groupid, $groupmemberships)) {
+					$oldgroupid = $groupid;
+					break;
+				}
+			}
+			
+			if ($oldgroupid == 0)
+				$errors[] = get_string('not_acceptable', 'groupexchange');
+		}
+		
+		if (!empty($errors))
+			echo $OUTPUT->notification(implode('<br>', $errors), 'notifyproblem');
+		else {
+			// accept the exchange offer
+			groupexchange_accept_offer($offer, $oldgroupid, $course);
+			echo $OUTPUT->notification(get_string('offer_accepted', 'groupexchange'), 'notifysuccess');
+			// reload the exchange object
+			$exchange = groupexchange_get_instance($cm->instance);
 		}
 		
 		$action = 'view';

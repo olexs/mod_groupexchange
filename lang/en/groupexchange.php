@@ -62,4 +62,7 @@ $string['error_delete_offer'] = 'Offer could not be deleted.';
 $string['offer_deleted'] = 'Your offer was removed.';
 $string['confirm_delete'] = 'Are you sure you want to remove your offer?';
 $string['confirm_accept'] = 'Are you sure you want to accept this offer and exchange groups? The exchange cannot be reversed.';
+$string['offer_doesnt_exist'] = 'Selected offer does not exist. Maybe it was removed by the offerer.';
+$string['offer_already_taken'] = 'Selected offer does was accepted by someone else. Too slow.';
+$string['offer_accepted'] = 'Exchange offer accepted, groups were exchanged.';
 $string['error_notenoughgroups'] = 'You must choose at least 2 groups fot the exchange!';
