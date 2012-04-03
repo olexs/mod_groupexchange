@@ -24,6 +24,7 @@
  */
  
 $string['modulename'] = 'Group exchange';
+$string['pluginname'] = 'Group exchange';
 $string['modulename_help'] = 'The group exchange module allows teachers to set up group exchange activities in courses, letting students exchange their group memberships.';
 $string['modulenameplural'] = 'Group exchanges';
 $string['pluginadministration'] = 'Group exchange settings';
