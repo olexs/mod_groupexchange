@@ -75,9 +75,9 @@ class mod_groupexchange_renderer extends plugin_renderer_base {
 
 				$html .= html_writer::tag('td', '<b>'.$offer->group->name.'</b>');
 				
-				$action = '';
+				$action = '<i>'.get_string('not_acceptable', 'groupexchange').'</i>';
 				if (groupexchange_offer_acceptable($offer, $groupmemberships)) {
-					$action .= html_writer::start_tag('form', array('action' => 'view.php', 'method' => 'post',
+					$action = html_writer::start_tag('form', array('action' => 'view.php', 'method' => 'post',
 						'onsubmit' => 'javascript: return confirm("'.get_string('confirm_accept', 'groupexchange').'");'));
 					$action .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'id', 'value' => $cm->id));
 					$action .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'action', 'value' => 'accept'));
@@ -86,7 +86,7 @@ class mod_groupexchange_renderer extends plugin_renderer_base {
 					$action .= html_writer::end_tag('form');
 				}
 				if ($offer->userid == $USER->id) {
-					$action .= html_writer::start_tag('form', array('action' => 'view.php', 'method' => 'post',
+					$action = html_writer::start_tag('form', array('action' => 'view.php', 'method' => 'post',
 						'onsubmit' => 'javascript: return confirm("'.get_string('confirm_delete', 'groupexchange').'");'));
 					$action .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'id', 'value' => $cm->id));
 					$action .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'action', 'value' => 'delete'));

@@ -214,7 +214,7 @@ function groupexchange_get_user_groups($user) {
 	$db_groups = $DB->get_records('groups_members', array('userid' => $user->id));
 	$groupmembership = array();
 	foreach ($db_groups as $m)
-		$groupmembership[] = $m->id;
+		$groupmembership[] = $m->groupid;
 	return $groupmembership;
 }
 

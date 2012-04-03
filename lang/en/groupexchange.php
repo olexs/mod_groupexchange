@@ -45,6 +45,7 @@ $string['author_name'] = 'Offered by:';
 $string['group_offer'] = 'Offering group:';
 $string['groups_accepted'] = 'Accepting groups:';
 $string['action'] = 'Action:';
+$string['not_acceptable'] = 'You cannot accept this offer.';
 $string['accept'] = 'Accept offer';
 $string['cancel'] = 'Remove offer';
 $string['no_offers'] = 'There are no standing offers at the moment.';
