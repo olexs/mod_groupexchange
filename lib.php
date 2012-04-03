@@ -21,6 +21,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
  
+require_once($CFG->dirroot . '/group/lib.php');
+ 
+// ------------------------------------------------------------------------------------------
+//                                     Standard functions
+// ------------------------------------------------------------------------------------------
+ 
  /**
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
@@ -126,4 +132,132 @@ function groupexchange_delete_instance($id) {
     }
 
     return $result;
+}
+
+// ------------------------------------------------------------------------------------------
+//                                     Internal functions
+// ------------------------------------------------------------------------------------------
+
+function groupexchange_get_instance($id) {
+	global $DB;
+	
+	$groupexchange = $DB->get_record('groupexchange', array('id' => $id));
+	
+	// get groups data
+	$groupexchange->groups = array();
+	$groups = $DB->get_records_sql('select g.* from 
+										{groupexchange_groups} gg, 
+										{groups} g
+									where gg.groupexchange = ?
+										and g.id = gg.groupid
+									order by g.name asc', array($id));
+	foreach($groups as $group) {
+		$groupexchange->groups[$group->id] = $group;
+	}
+	
+	// get active offers data
+	$groupexchange->offers = array();
+	$offers = $DB->get_records_sql('select 
+										o.*, 
+										u.firstname,
+										u.lastname 
+									from 
+										{groupexchange_offers} o,
+										{user} u
+									where o.groupexchange = ?
+										and o.accepted_by = 0
+										and u.id = o.userid
+									order by o.time_submitted asc', array($id));
+	foreach($offers as $offer) {
+		$offer->groups = array();
+		$groups = $DB->get_records('groupexchange_offers_groups', array('offer' => $offer->id));
+		foreach($groups as $group)
+			$offer->groups[$group->id] = $groupexchange->groups[$group->id];
+		$offer->group = $groupexchange->groups[$offer->group_offered];
+		$groupexchange->offers[$offer->id] = $offer;
+	}
+	
+	return $groupexchange;
+}
+
+function groupexchange_get_offer($offer_id) {
+	global $DB;
+	
+	$offer = $DB->get_record_sql('select 
+										o.*, 
+										u.firstname,
+										u.lastname 
+									from 
+										{groupexchange_offers} o,
+										{user} u
+									where o.id = ?
+										and u.id = o.userid
+									order by o.time_submitted asc', array($offer_id));
+	$groups = $DB->get_records_sql('select g.* from 
+										{groupexchange_offers_groups} og, 
+										{groups} g
+									where og.offer = ?
+										and g.id = og.groupid
+									order by g.name asc', array($offer_id));
+	foreach($groups as $group)
+		$offer->groups[$group->id] = $group;
+		
+	$offer->group = $DB->get_record('groups', array('id' => $offer->group_offered));
+		
+	return $offer;
+}
+
+function groupexchange_get_user_groups($user) {
+	$db_groups = $DB->get_records('groups_members', array('userid' => $user->id));
+	$groupmembership = array();
+	foreach ($db_groups as $m)
+		$groupmembership[] = $m;
+	return $groupmembership;
+}
+
+/**
+ * Returns true of the currently logged in user can accept the given exchange offer
+ */
+function groupexchange_offer_acceptable($offer, $groupmembership = null) {
+	global $DB, $USER;
+
+	if ($groupmembership === null) {
+		$groupmembership = groupexchange_get_user_groups($USER);
+	}
+	
+	foreach($offer->groups as $groupid => $group) {
+		if(in_array($groupid, $groupmembership))
+			return true;
+	}
+	
+	return false;
+}
+
+/**
+ * Given submitted "create offer" form data, check if there is a standing offer satisfying the conditions. Return the found offer object or false
+ */
+function groupexchange_find_offer() {
+	global $DB;
+	
+	// TODO: implement
+	
+	return false;
+}
+
+/**
+ * Creates a new offer from submitted form data
+ */
+function groupexchange_create_offer() {
+
+}
+
+/**
+ * If possible, accepts the given offer (with the logged in user). 
+ *
+ * Switches logged in user and offer author between groups
+ * Deactivates the offer
+ * Sends out email confirmations to both users
+ */
+function groupexchange_accept_offer($offer) {
+	
 }
