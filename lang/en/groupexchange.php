@@ -41,3 +41,4 @@ $string['groupexchangeclose'] = 'Until';
 
 $string['error_notenoughgroups'] = 'You must choose at least 2 groups fot the exchange!<br>';
 
+$string['pluginadministration'] = 'Group exchange settings';

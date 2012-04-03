@@ -59,13 +59,23 @@ class mod_groupexchange_mod_form extends moodleform_mod {
         $mform->disabledIf('timeclose', 'timerestrict');
         
 //-------------------------------------------------------------------------------
-        $this->standard_coursemodule_elements();
+        $features = new object();
+	  $features->groups           = false;
+	  $features->groupings        = false;
+	  $features->groupmembersonly = true;
+	  $this->standard_coursemodule_elements($features);
 //-------------------------------------------------------------------------------
         $this->add_action_buttons();
     }
 
     function data_preprocessing(&$default_values) {
         global $DB;
+		
+		if (!empty($this->_instance) 
+				&& $groups = $DB->get_records('groupexchange_groups', array('groupexchange' => $this->_instance))) {
+			foreach ($groups as $group)
+				$default_values['group'][$group->groupid] = 1;
+		}
         
 		if (empty($default_values['timeopen'])) {
             $default_values['timerestrict'] = 0;
