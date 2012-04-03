@@ -26,3 +26,16 @@
 $string['modulename'] = 'Group exchange';
 $string['modulename_help'] = 'The group exchange module allows teachers to set up group exchange activities in courses, letting students exchange their group memberships.';
 $string['modulenameplural'] = 'Group exchanges';
+
+$string['groupexchangename'] = 'Group exchange name';
+$string['choose_groups_help'] = 'Check the groups you want to enable for this group exchange. Students belonging to one of those groups will be able to participate in the exchange, offer their group membership and request a membership in one of the other groups checked here.<br><br><b>Warning!</b> Unchecking groups will not remove standing offers for them.';
+$string['choose_groups'] = 'Choose groups available for exchange';
+$string['setting_anonymous'] = 'Anonymous users';
+$string['setting_anonymous_help'] = 'If set, no user names will be shown next to the standing offers; students won\'t know, who they exchange group memberships with, only which group they exchanged into.';
+$string['setting_limitexchanges'] = 'Limit exchanges per user';
+$string['setting_limitexchanges_help'] = 'Set a limit to how often a student can exchange his group membership in this activity. Default is no limit.';
+$string['unlimited'] = 'No limit';
+$string['timerestrict'] = 'Restrict the exchange to this time interval';
+$string['groupexchangeopen'] = 'Open';
+$string['groupexchangeclose'] = 'Until';
+
