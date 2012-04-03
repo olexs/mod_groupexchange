@@ -38,6 +38,7 @@ $string['unlimited'] = 'No limit';
 $string['timerestrict'] = 'Restrict the exchange to this time interval';
 $string['groupexchangeopen'] = 'Open';
 $string['groupexchangeclose'] = 'Until';
+$string['checkallornone'] = 'Check all/none';
 
 $string['error_notenoughgroups'] = 'You must choose at least 2 groups fot the exchange!<br>';
 

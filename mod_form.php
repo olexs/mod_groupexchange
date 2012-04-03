@@ -33,9 +33,10 @@ class mod_groupexchange_mod_form extends moodleform_mod {
 		//$mform->addHelpButton('groupshdr', 'choose_groups', 'groupexchange');
 		$mform->addElement('static', 'groups', '', get_string('choose_groups_help', 'groupexchange'));
 		
+		$this->add_checkbox_controller(1, get_string("checkallornone", 'groupexchange'));
 		$db_groups = $DB->get_records('groups', array('courseid' => $COURSE->id), 'name');
         foreach ($db_groups as $group) {
-            $mform->addElement('advcheckbox', 'group['.$group->id.']', '', $group->name, null);
+            $mform->addElement('advcheckbox', 'group['.$group->id.']', '', $group->name, array('group' => 1));
         }
 		
 //-------------------------------------------------------------------------------
