@@ -170,12 +170,14 @@ function groupexchange_get_instance($id) {
 									order by o.time_submitted asc', array($id));
 	foreach($offers as $offer) {
 		$offer->groups = array();
-		$groups = $DB->get_records('groupexchange_offers_groups', array('offer' => $offer->id));
+		$groups = $DB->get_records('groupexchange_offers_groups', array('offerid' => $offer->id));
 		foreach($groups as $group)
-			$offer->groups[$group->id] = $groupexchange->groups[$group->id];
+			$offer->groups[$group->groupid] = $groupexchange->groups[$group->groupid];
 		$offer->group = $groupexchange->groups[$offer->group_offered];
-		$groupexchange->offers[$offer->id] = $offer;
+		$groupexchange->offers[] = $offer;
 	}
+	
+	// TODO: sort offers. user's offer first, acceptable offers next, all others afterwards
 	
 	return $groupexchange;
 }
@@ -196,7 +198,7 @@ function groupexchange_get_offer($offer_id) {
 	$groups = $DB->get_records_sql('select g.* from 
 										{groupexchange_offers_groups} og, 
 										{groups} g
-									where og.offer = ?
+									where og.offerid = ?
 										and g.id = og.groupid
 									order by g.name asc', array($offer_id));
 	foreach($groups as $group)
@@ -208,10 +210,11 @@ function groupexchange_get_offer($offer_id) {
 }
 
 function groupexchange_get_user_groups($user) {
+	global $DB;
 	$db_groups = $DB->get_records('groups_members', array('userid' => $user->id));
 	$groupmembership = array();
 	foreach ($db_groups as $m)
-		$groupmembership[] = $m;
+		$groupmembership[] = $m->id;
 	return $groupmembership;
 }
 
@@ -220,6 +223,9 @@ function groupexchange_get_user_groups($user) {
  */
 function groupexchange_offer_acceptable($offer, $groupmembership = null) {
 	global $DB, $USER;
+	
+	if ($USER->id == $offer->userid)
+		return false;
 
 	if ($groupmembership === null) {
 		$groupmembership = groupexchange_get_user_groups($USER);
@@ -247,8 +253,35 @@ function groupexchange_find_offer() {
 /**
  * Creates a new offer from submitted form data
  */
-function groupexchange_create_offer() {
+function groupexchange_create_offer($exchange, $offer_group, $request_groups) {
+	global $DB, $USER;
 
+	$offer = new stdClass();
+	$offer->groupexchange = $exchange->id;
+	$offer->userid = $USER->id;
+	$offer->time_submitted = time();
+	$offer->group_offered = $offer_group;
+	
+	$offer->id = $DB->insert_record('groupexchange_offers', $offer);
+	
+	foreach($request_groups as $groupid => $x) {
+		$obj = new stdClass();
+		$obj->offerid = $offer->id;
+		$obj->groupid = $groupid;
+		$DB->insert_record('groupexchange_offers_groups', $obj);
+	}	
+}
+
+function groupexchange_delete_offer($offerid) {
+	global $DB, $USER;
+	
+	if (!$DB->record_exists('groupexchange_offers', array('id' => $offerid, 'userid' => $USER->id)))
+		return false;
+	
+	if (!$DB->delete_records('groupexchange_offers_groups', array('offerid' => $offerid)))
+		return false;
+	
+	return $DB->delete_records('groupexchange_offers', array('id' => $offerid));
 }
 
 /**

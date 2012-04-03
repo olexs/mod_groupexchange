@@ -26,6 +26,7 @@
 $string['modulename'] = 'Group exchange';
 $string['modulename_help'] = 'The group exchange module allows teachers to set up group exchange activities in courses, letting students exchange their group memberships.';
 $string['modulenameplural'] = 'Group exchanges';
+$string['pluginadministration'] = 'Group exchange settings';
 
 $string['groupexchangename'] = 'Group exchange name';
 $string['choose_groups_help'] = 'Check the groups you want to enable for this group exchange. Students belonging to one of those groups will be able to participate in the exchange, offer their group membership and request a membership in one of the other groups checked here.<br>Unchecking groups will not remove standing offers for them.';
@@ -39,7 +40,25 @@ $string['timerestrict'] = 'Restrict the exchange to this time interval';
 $string['groupexchangeopen'] = 'Open';
 $string['groupexchangeclose'] = 'Until';
 $string['checkallornone'] = 'Check all/none';
-
-$string['error_notenoughgroups'] = 'You must choose at least 2 groups fot the exchange!<br>';
-
-$string['pluginadministration'] = 'Group exchange settings';
+$string['standing_offers'] = 'Standing group exchange offers';
+$string['author_name'] = 'Offered by:';
+$string['group_offer'] = 'Offering group:';
+$string['groups_accepted'] = 'Accepting groups:';
+$string['action'] = 'Action:';
+$string['accept'] = 'Accept offer';
+$string['cancel'] = 'Remove offer';
+$string['no_offers'] = 'There are no standing offers at the moment.';
+$string['cannot_offer'] = 'You must be a member in one of the exchangeable groups.';
+$string['post_offer'] = 'Post a new group exchange offer';
+$string['offer_group'] = 'Offer group for exchange:';
+$string['request_group'] = 'Request group(s) for exchange:';
+$string['submit_offer'] = 'Submit group exchange offer';
+$string['offer_created'] = 'Group exchange offer successfully created.';
+$string['error_request_group_not_enough'] = 'You must choose at least one group you want to accept in exchange.';
+$string['error_request_group_bad'] = 'Bad group data submitted.';
+$string['error_offer_group'] = 'Bad offered group data submitted: must be one admissible group ID';
+$string['error_delete_offer'] = 'Offer could not be deleted.';
+$string['offer_deleted'] = 'Your offer was removed.';
+$string['confirm_delete'] = 'Are you sure you want to remove your offer?';
+$string['confirm_accept'] = 'Are you sure you want to accept this offer and exchange groups? The exchange cannot be reversed.';
+$string['error_notenoughgroups'] = 'You must choose at least 2 groups fot the exchange!';
