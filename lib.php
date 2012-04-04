@@ -295,7 +295,7 @@ function groupexchange_delete_offer($offerid, $force = false) {
  * Deactivates the offer
  * Sends out email confirmations to both users
  */
-function groupexchange_accept_offer($offer, $oldgroupid, $course) {
+function groupexchange_accept_offer($exchange, $offer, $oldgroupid, $course) {
 	
 	global $DB, $USER;
 	
@@ -323,6 +323,26 @@ function groupexchange_accept_offer($offer, $oldgroupid, $course) {
 	
 	// TODO: log
 	
-	// TODO: notify the offerer about the exchange
+	// notify the offerer about the exchange
+	$eventdata = new object();
+	$eventdata->component         = 'mod_groupexchange';
+	$eventdata->name              = 'offer_accepted';
+	$eventdata->userfrom          = $USER;
+	$eventdata->userto            = $DB->get_record('user', array('id' => $offerer));
+	$eventdata->subject           = get_string('email_subject', 'groupexchange', array(
+		'course' => $course->fullname, 
+		'exchange' => $exchange->name));
+	$eventdata->fullmessage       = get_string('email_body', 'groupexchange', array(
+		'user' => $USER->firstname.' '.$USER->lastname, 		
+		'course' => $course->fullname, 							
+		'exchange' => $exchange->name,							
+		'groupfrom' => $exchange->groups[$offerer_oldgroup]->name,
+		'groupto' => $exchange->groups[$offerer_newgroup]->name));
+	$eventdata->fullmessageformat = FORMAT_PLAIN;   // text format
+	$eventdata->fullmessagehtml = $eventdata->fullmessage;
+	$eventdata->smallmessage = $eventdata->fullmessage;
+	$eventdata->notification = 1;
+	
+	message_send($eventdata);
 	
 }

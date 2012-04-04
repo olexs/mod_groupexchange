@@ -29,6 +29,13 @@ $string['modulename_help'] = 'The group exchange module allows teachers to set u
 $string['modulenameplural'] = 'Group exchanges';
 $string['pluginadministration'] = 'Group exchange settings';
 
+$string['messageprovider:offer_accepted'] = 'Notification of accepted group exchange offers';
+$string['email_subject'] = '{$a->course}: {$a->exchange}: group exchange offer accepted';
+$string['email_body'] = 
+'Your group exchange offer in \'{$a->exchange}\' (course: \'{$a->course}\') was accepted.
+
+You were switched from group \'{$a->groupfrom}\' to \'{$a->groupto}\'.';
+
 $string['groupexchangename'] = 'Group exchange name';
 $string['choose_groups_help'] = 'Check the groups you want to enable for this group exchange. Students belonging to one of those groups will be able to participate in the exchange, offer their group membership and request a membership in one of the other groups checked here.<br>Unchecking groups will not remove standing offers for them.';
 $string['choose_groups'] = 'Choose groups available for exchange';

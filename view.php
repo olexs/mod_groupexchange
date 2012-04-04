@@ -134,7 +134,7 @@
 			echo $OUTPUT->notification(implode('<br>', $errors), 'notifyproblem');
 		else {
 			// accept the exchange offer
-			groupexchange_accept_offer($offer, $oldgroupid, $course);
+			groupexchange_accept_offer($exchange, $offer, $oldgroupid, $course);
 			echo $OUTPUT->notification(get_string('offer_accepted', 'groupexchange'), 'notifysuccess');
 			// reload the exchange object
 			$exchange = groupexchange_get_instance($cm->instance);
