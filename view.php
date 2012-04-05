@@ -53,6 +53,20 @@
     if ($exchange->intro) {
         echo $OUTPUT->box(format_module_intro('groupexchange', $exchange, $cm->id), 'generalbox', 'intro');
     }
+	
+	$groupexchangeopen = true;
+    $timenow = time();
+    if ($exchange->timeclose !=0) {
+        if ($exchange->timeopen > $timenow ) {
+            echo $OUTPUT->box(get_string("notopenyet", "groupexchange", userdate($exchange->timeopen)), "generalbox notopenyet");
+            echo $OUTPUT->footer();
+            exit;
+        } else if ($timenow > $exchange->timeclose) {
+            echo $OUTPUT->box(get_string("expired", "groupexchange", userdate($exchange->timeclose)), "generalbox expired");
+			echo $OUTPUT->footer();
+            exit;
+        }
+    }
    
     /*
 	 * Creating a new offer
@@ -73,6 +87,7 @@
 		}
 		
 		if (!$errors) {
+		
 			// TODO: check, if offer can be filled by one of the existing ones
 				
 			// finally, create new offer
@@ -143,25 +158,13 @@
 		$action = 'view';
 	}
 	
-    $groupexchangeopen = true;
-    $timenow = time();
-    if ($exchange->timeclose !=0) {
-        if ($exchange->timeopen > $timenow ) {
-            echo $OUTPUT->box(get_string("notopenyet", "groupexchange", userdate($exchange->timeopen)), "generalbox notopenyet");
-            echo $OUTPUT->footer();
-            exit;
-        } else if ($timenow > $exchange->timeclose) {
-            echo $OUTPUT->box(get_string("expired", "groupexchange", userdate($exchange->timeclose)), "generalbox expired");
-			echo $OUTPUT->footer();
-            exit;
-        }
-    }
-	
 	// render standing offers
 	if ($action == 'view' 
 			|| ($action == 'offer' && empty($errors))) {
 		echo $renderer->show_offers($cm, $exchange);
 		echo '<br><br>';
+		
+		// TODO: log
 	}
 	
 	// if no offer is standing, render offer form
