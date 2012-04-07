@@ -139,7 +139,7 @@ function groupexchange_delete_instance($id) {
 // ------------------------------------------------------------------------------------------
 
 function groupexchange_get_instance($id) {
-	global $DB;
+	global $DB, $USER, $_groupexchange_groupmembership_cache;
 	
 	$groupexchange = $DB->get_record('groupexchange', array('id' => $id));
 	
@@ -177,9 +177,39 @@ function groupexchange_get_instance($id) {
 		$groupexchange->offers[] = $offer;
 	}
 	
-	// TODO: sort offers. user's offer first, acceptable offers next, all others afterwards
+	// sort offers. user's offer first, acceptable offers next, all others afterwards
+	$_groupexchange_groupmembership_cache = groupexchange_get_user_groups($USER);
+	usort($groupexchange->offers, "groupexchange_compare_offers");
 	
 	return $groupexchange;
+}
+
+/**
+ * Comparator for user-defined sort above
+ */
+function groupexchange_compare_offers($a, $b) {
+	global $USER, $_groupexchange_groupmembership_cache;
+	
+	// user's own offers come first
+	if ($a->userid == $USER->id && $b->userid != $USER->id)
+		return -1;
+	else if ($a->userid != $USER->id && $b->userid == $USER->id)
+		return 1;
+	
+	// acceptable offers come next
+	if (groupexchange_offer_acceptable($a, $_groupexchange_groupmembership_cache) 
+			&& !groupexchange_offer_acceptable($b, $_groupexchange_groupmembership_cache))
+		return -1;
+	else if (!groupexchange_offer_acceptable($a, $_groupexchange_groupmembership_cache) 
+			&& groupexchange_offer_acceptable($b, $_groupexchange_groupmembership_cache))
+		return 1;
+		
+	// otherwise equal offers are sorted by time submitted, oldest first
+	return ($a->time_submitted < $b->time_submitted) 
+		? -1 
+		: (($a->time_submitted > $b->time_submitted)
+			? 1 
+			: 0);
 }
 
 function groupexchange_get_offer($offer_id) {
@@ -219,7 +249,7 @@ function groupexchange_get_user_groups($user) {
 }
 
 /**
- * Returns true of the currently logged in user can accept the given exchange offer
+ * Returns true if the currently logged in user can accept the given exchange offer
  */
 function groupexchange_offer_acceptable($offer, $groupmembership = null) {
 	global $DB, $USER;
@@ -308,9 +338,14 @@ function groupexchange_accept_offer($exchange, $offer, $oldgroupid, $course) {
 	$accepter_oldgroup = $oldgroupid;
 	$accepter_newgroup = $offer->group_offered;
 	
+	// remove standing offers by accepting user
+	$offers = $DB->get_records('groupexchange_offers', array('userid' => $accepter, 'groupexchange' => $exchange->id));
+	foreach ($offers as $_offer)
+		groupexchange_delete_offer($_offer->id, true);
+	
 	// update standing offer
-	$offer->accepted_by = $USER->id;
-	$offer->accepted_groupid = $oldgroupid;
+	$offer->accepted_by = $accepter;
+	$offer->accepted_groupid = $accepter_oldgroup;
 	$DB->update_record('groupexchange_offers', $offer);
 	
 	// remove users from old groups
