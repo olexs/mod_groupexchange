@@ -403,3 +403,35 @@ function groupexchange_accept_offer($exchange, $offer, $oldgroupid, $course) {
 	message_send($eventdata);
 	
 }
+
+/**
+ * Moodle event handler for group deletion.
+ * Remove all offers offering this group, offer acceptances accepting this group,
+ * and all group availabilities in exchanges
+ */
+function groupexchange_eventhandler_groupdelete($group) {
+	global $DB;
+
+	// offer acceptances
+	$DB->delete_records('groupexchange_offers_groups', array('groupid' => $group->id));
+	
+	// unaccepted offers
+	$offers = $DB->get_records('groupexchange_offers', array('group_offered' => $group->id, 'accepted_by' => 0));
+	foreach ($offers as $offer)
+		groupexchange_delete_offer($offer->id, true);
+		
+	// group availabilities
+	$DB->delete_records('groupexchange_groups', array('groupid' => $group->id));
+}
+
+/**
+ * Moodle event handler for user group removal.
+ * Remove all unaccepted offers by this user offering this group for exchange.
+ */
+function groupexchange_eventhandler_memberremove($event) {
+	global $DB;
+
+	$offers = $DB->get_records('groupexchange_offers', array('userid' => $event->userid, 'group_offered' => $event->groupid, 'accepted_by' => 0));
+	foreach ($offers as $offer)
+		groupexchange_delete_offer($offer->id, true);
+}
