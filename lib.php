@@ -27,7 +27,7 @@ require_once($CFG->dirroot . '/group/lib.php');
 //                                     Standard functions
 // ------------------------------------------------------------------------------------------
  
- /**
+/**
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
  * will create a new instance and return the id number
