@@ -88,7 +88,18 @@
 		
 		if (!$errors) {
 		
-			// TODO: check, if offer can be filled by one of the existing ones
+			// show potential fitting offers, let user accept one or ignore them and create his offer
+			$ignore_offers = optional_param('ignore_offers', 0, PARAM_INT);
+			if ($ignore_offers == 0) {
+				$offers = groupexchange_find_offer($exchange, $offer_group, $request_group);
+				if (!empty($offers)) {
+					echo '<i>'.get_string("fitting_offers", "groupexchange").'</i>';
+					echo $renderer->show_offers($cm, $exchange, $offers);
+					echo $renderer->show_ignore_form($cm, $offer_group, $request_group);
+					echo $OUTPUT->footer();
+					exit;
+				}
+			}
 				
 			// finally, create new offer
 			groupexchange_create_offer($exchange, $offer_group, $request_group);

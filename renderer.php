@@ -26,18 +26,32 @@
 class mod_groupexchange_renderer extends plugin_renderer_base {
 
 	public function show_styles() {
-		return "<style type='text/css'>table.gex td {font-weight: normal; vertical-align: top} p.error {font-weight: bold; color: darkred}</style>";
+		return "<style type='text/css'>
+			table.gex td 
+				{font-weight: normal; vertical-align: top} 
+			p.error 
+				{font-weight: bold; color: darkred}
+			input[type=submit]
+				{padding: 5px}
+			tr.my
+				{background-color: #ddd}
+			tr.acceptable
+				{background-color: #eee}
+		</style>";
 	}
 
-	public function show_offers($cm, $exchange) {
+	public function show_offers($cm, $exchange, $offers = null) {
 		global $OUTPUT, $USER;
+		
+		if ($offers == null)
+			$offers = $exchange->offers;
 		
 		// prefetch logged in user group memberships
 		$groupmemberships = groupexchange_get_user_groups($USER);
 		
 		$html = html_writer::tag('h2', get_string('standing_offers', 'groupexchange'));
 
-		if (sizeof($exchange->offers) == 0) {
+		if (sizeof($offers) == 0) {
 					
 			$html .= html_writer::tag('i', get_string('no_offers', 'groupexchange'));
 		
@@ -55,12 +69,21 @@ class mod_groupexchange_renderer extends plugin_renderer_base {
 			$html .= html_writer::end_tag('tr');
 			
 			// render offers as table rows
-			foreach ($exchange->offers as $offer) {
-				$html .= html_writer::start_tag('tr');
+			foreach ($offers as $offer) {
+				$attributes = array();
+				if (groupexchange_offer_acceptable($offer, $groupmemberships))
+					$attributes['class'] = 'acceptable';
+				else if ($offer->userid == $USER->id)
+					$attributes['class'] = 'my';
+			
+				$html .= html_writer::start_tag('tr', $attributes);
 				
 				if (!$exchange->anonymous) {
 					$url = new moodle_url('/user/view.php', array('id'=>$offer->userid, 'course'=>$exchange->course));
 					$link_html = html_writer::link($url, $offer->firstname.' '.$offer->lastname);
+					if ($offer->userid == $USER->id) {
+						$link_html .= '<br><i>'.get_string('your_offer', 'groupexchange').'</i>';
+					}
 					$html .= html_writer::tag('td', $link_html);
 				}
 				
@@ -193,10 +216,25 @@ class mod_groupexchange_renderer extends plugin_renderer_base {
 		
 		$html .= html_writer::end_tag('form');
 		
-		
-		
 		return $html;
+	}
 	
+	public function show_ignore_form($cm, $offer_group, $request_group) {
+		global $OUTPUT;
+	
+		$html = html_writer::tag('h2', get_string('post_offer', 'groupexchange'));
+		$html .= '<br>';
+		$html .= html_writer::start_tag('form', array('action' => 'view.php', 'method' => 'post'));
+		$html .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'id', 'value' => $cm->id));
+		$html .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'action', 'value' => 'offer'));
+		$html .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'ignore_offers', 'value' => '1'));
+		$html .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'offer_group', 'value' => $offer_group));
+		foreach(array_keys($request_group) as $request)
+			$html .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => "request_group[$request]", 'value' => '1'));
+		$html .= html_writer::empty_tag('input', array('type' => 'submit', 'value' => get_string('submit_offer_ignore', 'groupexchange')));
+		$html .= html_writer::end_tag('form');
+		
+		return $html;		
 	}
 
 }

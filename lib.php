@@ -271,14 +271,41 @@ function groupexchange_offer_acceptable($offer, $groupmembership = null) {
 }
 
 /**
- * Given submitted "create offer" form data, check if there is a standing offer satisfying the conditions. Return the found offer object or false
+ * Given submitted "create offer" form data, check if there is a standing offer satisfying the conditions. 
+ * Return the found offer array or empty array
  */
-function groupexchange_find_offer() {
+function groupexchange_find_offer($exchange, $offer_group, $request_groups) {
 	global $DB;
 	
-	// TODO: implement
+	// find fitting offers
+	$placeholders = array();
+	$arguments = array();
+	$arguments[] = $exchange->id;
+	foreach($request_groups as $key => $x) {
+		$placeholders[] = '?';
+		$arguments[] = $key;
+	}
+	$arguments[] = $offer_group;
 	
-	return false;
+	$offers = $DB->get_records_sql('select
+			o.id
+		from
+			{groupexchange_offers} o
+		where
+			o.groupexchange = ? and
+			o.accepted_by = 0 and
+			o.group_offered in ('.implode(',', $placeholders).') and
+			exists(select * from {groupexchange_offers_groups} g 
+					where g.offerid = o.id 
+					and g.groupid = ?)', $arguments);
+	
+	$results = array();
+	
+	// fetch full offer information for found offers
+	foreach($offers as $offer)
+		$results[] = groupexchange_get_offer($offer->id);
+	
+	return $results;
 }
 
 /**
