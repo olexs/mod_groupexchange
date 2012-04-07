@@ -171,6 +171,7 @@ function groupexchange_get_instance($id) {
 	foreach($offers as $offer) {
 		$offer->groups = array();
 		$groups = $DB->get_records('groupexchange_offers_groups', array('offerid' => $offer->id));
+		// attach full group info to each group in offer
 		foreach($groups as $group)
 			$offer->groups[$group->groupid] = $groupexchange->groups[$group->groupid];
 		$offer->group = $groupexchange->groups[$offer->group_offered];
@@ -300,8 +301,6 @@ function groupexchange_create_offer($exchange, $offer_group, $request_groups) {
 		$obj->groupid = $groupid;
 		$DB->insert_record('groupexchange_offers_groups', $obj);
 	}	
-	
-	// TODO: log
 }
 
 function groupexchange_delete_offer($offerid, $force = false) {
@@ -313,8 +312,6 @@ function groupexchange_delete_offer($offerid, $force = false) {
 	if (!$DB->delete_records('groupexchange_offers_groups', array('offerid' => $offerid)))
 		return false;
 		
-	// TODO: log
-	
 	return $DB->delete_records('groupexchange_offers', array('id' => $offerid));
 }
 
@@ -355,8 +352,6 @@ function groupexchange_accept_offer($exchange, $offer, $oldgroupid, $course) {
 	// assign users to new groups
 	groups_add_member($offerer_newgroup, $offerer);
 	groups_add_member($accepter_newgroup, $accepter);
-	
-	// TODO: log
 	
 	// notify the offerer about the exchange
 	$eventdata = new object();

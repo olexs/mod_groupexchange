@@ -92,6 +92,7 @@
 				
 			// finally, create new offer
 			groupexchange_create_offer($exchange, $offer_group, $request_group);
+			add_to_log($course->id, "groupexchange", "create offer", "view.php?id=$cm->id", $exchange->id, $cm->id);
 			echo $OUTPUT->notification(get_string('offer_created', 'groupexchange'), 'notifysuccess');
 			// reload the exchange object
 			$exchange = groupexchange_get_instance($cm->instance);
@@ -105,6 +106,7 @@
 		$delete_offer = optional_param('offer', 0, PARAM_INT);
 		
 		if (groupexchange_delete_offer($delete_offer)) {
+			add_to_log($course->id, "groupexchange", "delete offer", "view.php?id=$cm->id", $exchange->id, $cm->id);
 			echo $OUTPUT->notification(get_string('offer_deleted', 'groupexchange'), 'notifysuccess');
 			// reload the exchange object
 			$exchange = groupexchange_get_instance($cm->instance);
@@ -150,6 +152,7 @@
 		else {
 			// accept the exchange offer
 			groupexchange_accept_offer($exchange, $offer, $oldgroupid, $course);
+			add_to_log($course->id, "groupexchange", "accept offer", "view.php?id=$cm->id", $exchange->id, $cm->id);
 			echo $OUTPUT->notification(get_string('offer_accepted', 'groupexchange'), 'notifysuccess');
 			// reload the exchange object
 			$exchange = groupexchange_get_instance($cm->instance);
@@ -161,10 +164,9 @@
 	// render standing offers
 	if ($action == 'view' 
 			|| ($action == 'offer' && empty($errors))) {
-		echo $renderer->show_offers($cm, $exchange);
+		add_to_log($course->id, "groupexchange", "view offers", "view.php?id=$cm->id", $exchange->id, $cm->id);
+			echo $renderer->show_offers($cm, $exchange);
 		echo '<br><br>';
-		
-		// TODO: log
 	}
 	
 	// if no offer is standing, render offer form
