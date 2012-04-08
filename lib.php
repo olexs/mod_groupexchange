@@ -328,6 +328,8 @@ function groupexchange_create_offer($exchange, $offer_group, $request_groups) {
 		$obj->groupid = $groupid;
 		$DB->insert_record('groupexchange_offers_groups', $obj);
 	}	
+	
+	return $offer->id;
 }
 
 function groupexchange_delete_offer($offerid, $force = false) {
@@ -417,8 +419,10 @@ function groupexchange_eventhandler_groupdelete($group) {
 	
 	// unaccepted offers
 	$offers = $DB->get_records('groupexchange_offers', array('group_offered' => $group->id, 'accepted_by' => 0));
-	foreach ($offers as $offer)
+	foreach ($offers as $offer){
 		groupexchange_delete_offer($offer->id, true);
+		add_to_log($course->id, "groupexchange", "delete offer", "view.php?id=$cm->id&offer=$offer->id", $exchange->id, $cm->id);
+	}
 		
 	// group availabilities
 	$DB->delete_records('groupexchange_groups', array('groupid' => $group->id));
@@ -432,6 +436,8 @@ function groupexchange_eventhandler_memberremove($event) {
 	global $DB;
 
 	$offers = $DB->get_records('groupexchange_offers', array('userid' => $event->userid, 'group_offered' => $event->groupid, 'accepted_by' => 0));
-	foreach ($offers as $offer)
+	foreach ($offers as $offer) {
 		groupexchange_delete_offer($offer->id, true);
+		add_to_log($course->id, "groupexchange", "delete offer", "view.php?id=$cm->id&offer=$offer->id", $exchange->id, $cm->id);
+	}
 }
