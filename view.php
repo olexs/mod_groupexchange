@@ -86,6 +86,13 @@
 				$errors['request_group'] = get_string('error_request_group_bad', 'groupexchange') . ": " . $groupid;
 		}
 		
+		// check if there's a standing offer by the user already, offering this group
+		if ($DB->record_exists('groupexchange_offers', array('userid' => $USER->id, 'group_offered' => $offer_group))) {
+			echo $OUTPUT->notification(get_string('error_double_offer', 'groupexchange'), 'notifyproblem');
+			$errors['offer_group'] = get_string('error_double_offer', 'groupexchange');
+			$action = 'view';
+		}
+		
 		if (!$errors) {
 		
 			// show potential fitting offers, let user accept one or ignore them and create his offer

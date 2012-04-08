@@ -69,6 +69,7 @@ $string['offer_created'] = 'Group exchange offer successfully created.';
 $string['error_request_group_not_enough'] = 'You must choose at least one group you want to accept in exchange.';
 $string['error_request_group_bad'] = 'Bad group data submitted.';
 $string['error_offer_group'] = 'Bad offered group data submitted: must be one admissible group ID';
+$string['error_double_offer'] = 'You already have an active offer offering this group. The offer could not be created.';
 $string['error_delete_offer'] = 'Offer could not be deleted.';
 $string['offer_deleted'] = 'Your offer was removed.';
 $string['confirm_delete'] = 'Are you sure you want to remove your offer?';

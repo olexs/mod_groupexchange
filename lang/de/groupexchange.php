@@ -69,6 +69,7 @@ $string['offer_created'] = 'Gruppentauschangebot wurde erstellt.';
 $string['error_request_group_not_enough'] = 'Sie müssen mindestens eine erwünschte Gruppe auswählen.';
 $string['error_request_group_bad'] = 'Bad group data submitted.';
 $string['error_offer_group'] = 'Bad offered group data submitted: must be one admissible group ID';
+$string['error_double_offer'] = 'Sie haben bereits ein Angebot mit dieser Gruppe in dieser Börse. Angebot wurde nicht nochmal erstellt.';
 $string['error_delete_offer'] = 'Angebot konnte nicht entfernt werden.';
 $string['offer_deleted'] = 'Ihr Angebot wurde entfernt.';
 $string['confirm_delete'] = 'Sind Sie sicher, dass Sie Ihr Angebot entfernen möchten?';

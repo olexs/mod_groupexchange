@@ -421,7 +421,7 @@ function groupexchange_eventhandler_groupdelete($group) {
 	$offers = $DB->get_records('groupexchange_offers', array('group_offered' => $group->id, 'accepted_by' => 0));
 	foreach ($offers as $offer){
 		groupexchange_delete_offer($offer->id, true);
-		add_to_log($course->id, "groupexchange", "delete offer", "view.php?id=$cm->id&offer=$offer->id", $exchange->id, $cm->id);
+		//add_to_log($course->id, "groupexchange", "delete offer", "view.php?id=$cm->id&offer=$offer->id", $exchange->id, $cm->id);
 	}
 		
 	// group availabilities
@@ -438,6 +438,6 @@ function groupexchange_eventhandler_memberremove($event) {
 	$offers = $DB->get_records('groupexchange_offers', array('userid' => $event->userid, 'group_offered' => $event->groupid, 'accepted_by' => 0));
 	foreach ($offers as $offer) {
 		groupexchange_delete_offer($offer->id, true);
-		add_to_log($course->id, "groupexchange", "delete offer", "view.php?id=$cm->id&offer=$offer->id", $exchange->id, $cm->id);
+		//add_to_log($course->id, "groupexchange", "delete offer", "view.php?id=$cm->id&offer=$offer->id", $exchange->id, $cm->id);
 	}
 }
