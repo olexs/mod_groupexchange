@@ -24,6 +24,21 @@ function xmldb_groupexchange_upgrade($oldversion) {
     global $CFG, $DB;
     
     $dbman = $DB->get_manager(); // loads ddl manager and xmldb classes
+	
+	if ($oldversion < 2012120300) {
+
+        // Define field completionsubmit to be added to choicegroup
+        $table = new xmldb_table('groupexchange');
+        $field = new xmldb_field('studentsonly', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'limitexchanges');
+
+        // Conditionally launch add field completionsubmit
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // choicegroup savepoint reached
+        upgrade_mod_savepoint(true, 2012120300, 'groupexchange');
+    }
     
     return true;
 }

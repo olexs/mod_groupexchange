@@ -80,3 +80,6 @@ $string['offer_accepted'] = 'Exchange offer accepted, groups were exchanged.';
 $string['error_notenoughgroups'] = 'You must choose at least 2 groups fot the exchange!';
 $string['fitting_offers'] = 'Following standing offers were found matching your chosen groups. You might want to accept one of these offers instead of creating a new one.';
 $string['submit_offer_ignore'] = 'Ignore the standing offers and post my new offer';
+$string['setting_students_only'] = 'Students only';
+$string['setting_students_only_help'] = 'Allow only students to participate in this group exchange.';
+$string['error_students_only'] = 'Only students can participate in this group exchange activity.';

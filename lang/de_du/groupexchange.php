@@ -80,3 +80,6 @@ $string['offer_accepted'] = 'Das Angebot wurde angenommen, die Gruppen wurden ge
 $string['error_notenoughgroups'] = 'Du solltest mindestens zwei Gruppen für die Tauschbörse wählen!';
 $string['fitting_offers'] = 'Es wurden folgende aktive Tauschangebote gefunden, die deinen Angaben entsprechen. Vielleicht möchtest du einen davon annehmen, anstatt einen eigenen Angebot zu erstellen.';
 $string['submit_offer_ignore'] = 'Aktive Angebote ignorieren, meinen Tauschangebot erstellen';
+$string['setting_students_only'] = 'Nur für Studierende';
+$string['setting_students_only_help'] = 'Nur Studierenden erlauben, an dieser Tauschbörse teilzunehmen.';
+$string['error_students_only'] = 'Nur Studierende können an dieser Tauschbörse teilnehmen.';

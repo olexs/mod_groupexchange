@@ -99,7 +99,7 @@ class mod_groupexchange_renderer extends plugin_renderer_base {
 				$html .= html_writer::tag('td', '<b>'.$offer->group->name.'</b>');
 				
 				$action = '<i>'.get_string('not_acceptable', 'groupexchange').'</i>';
-				if (groupexchange_offer_acceptable($offer, $groupmemberships)) {
+				if (groupexchange_is_user_eligible($exchange) && groupexchange_offer_acceptable($offer, $groupmemberships)) {
 					$action = html_writer::start_tag('form', array('action' => 'view.php', 'method' => 'post',
 						'onsubmit' => 'javascript: return confirm("'.get_string('confirm_accept', 'groupexchange').'");'));
 					$action .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'id', 'value' => $cm->id));
@@ -134,6 +134,11 @@ class mod_groupexchange_renderer extends plugin_renderer_base {
 		global $OUTPUT, $USER;
 	
 		$html = html_writer::tag('h2', get_string('post_offer', 'groupexchange'));
+		
+		if (!groupexchange_is_user_eligible($exchange)) {
+			$html .= html_writer::tag('i', get_string('error_students_only', 'groupexchange'));
+			return $html;
+		}
 		
 		// prefetch logged in user group memberships
 		$groupmemberships = groupexchange_get_user_groups($USER);

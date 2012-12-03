@@ -45,6 +45,9 @@ class mod_groupexchange_mod_form extends moodleform_mod {
         $mform->addElement('advcheckbox', 'anonymous', get_string('setting_anonymous', 'groupexchange'));
 		$mform->addHelpButton('anonymous', 'setting_anonymous', 'groupexchange');
 		
+		$mform->addElement('advcheckbox', 'studentsonly', get_string('setting_students_only', 'groupexchange'));
+		$mform->addHelpButton('studentsonly', 'setting_students_only', 'groupexchange');
+		
         $limitoptions = array(0 => get_string('unlimited', 'groupexchange'), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         $mform->addElement('hidden', 'limitexchanges', 0);
         //$mform->addHelpButton('limitexchanges', 'setting_limitexchanges', 'groupexchange');

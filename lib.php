@@ -249,6 +249,34 @@ function groupexchange_get_user_groups($user) {
 	return $groupmembership;
 }
 
+$_groupexchange_user_eligible = -1;
+/**
+ * Check if the user is eligible to partake in the group exchange
+ */
+function groupexchange_is_user_eligible($exchange) {
+	if (!$exchange->studentsonly)
+		return true;
+	
+	global $_groupexchange_user_eligible;
+	if ($_groupexchange_user_eligible !== -1)
+		return $_groupexchange_user_eligible;
+		
+	global $USER;
+		
+	// check that the user has student role in the course
+	$context = get_context_instance(CONTEXT_COURSE, $exchange->course);
+	$roles = get_user_roles($context, $USER->id, false);
+	foreach ($roles as $role) {
+		if ($role->shortname == 'student') {
+			$_groupexchange_user_eligible = true;
+			return true;
+		}
+	}
+	
+	$_groupexchange_user_eligible = false;
+	return false;
+}
+
 /**
  * Returns true if the currently logged in user can accept the given exchange offer
  */
